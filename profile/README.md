@@ -8,6 +8,7 @@ Our Kubernetes ecosystem:
 
 Our security projects:
 - [waf-proxy](https://github.com/riotkit-org/waf-proxy) to guard applications against attacks
+- [wordpress-hardened](https://github.com/riotkit-org/wordpress-hardened), WordPress specialized installation automation (docker + helm) with hardening rules, WAF and overall RiotKit ecosystem integration
 
 Our Backup ecosystem:
 - [backup-repository](https://github.com/riotkit-org/backup-repository) to store End-To-End encrypted backups in a multi-user environment
