@@ -1,12 +1,15 @@
 ## Hi there 👋
 
-<!--
+We are a group of people creating tools for adoption of new technologies in low budget projects like activists networks or various smaller organizations.
 
-**Here are some ideas to get you started:**
+Our Kubernetes ecosystem:
+- [git-clone-pperator](https://github.com/riotkit-org/git-clone-operator) for provisioning of Persistent Volumes from GIT
+- [volume-syncing-operator](https://github.com/riotkit-org/volume-syncing-operator) for synchronizing Kubernetes Volumes to a cloud or on-premise storage
 
-🙋‍♀️ A short introduction - what is your organization all about?
-🌈 Contribution guidelines - how can the community get involved?
-👩‍💻 Useful resources - where can the community find your docs? Is there anything else the community should know?
-🍿 Fun facts - what does your team eat for breakfast?
-🧙 Remember, you can do mighty things with the power of [Markdown](https://docs.github.com/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
--->
+Our security projects:
+- [waf-proxy](https://github.com/riotkit-org/waf-proxy) to guard applications against attacks
+
+Our Backup ecosystem:
+- [backup-repository](https://github.com/riotkit-org/backup-repository) to store End-To-End encrypted backups in a multi-user environment
+- [pgbr](https://github.com/riotkit-org/br-pgbr), a PostgreSQL automation wrapper
+- [br-backup-maker](https://github.com/riotkit-org/br-backup-maker), a Backup Repository client
