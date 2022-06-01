@@ -3,7 +3,7 @@
 We are a group of people creating tools for adoption of new technologies in low budget projects like activists networks or various smaller organizations.
 
 Our Kubernetes ecosystem:
-- [git-clone-pperator](https://github.com/riotkit-org/git-clone-operator) for provisioning of Persistent Volumes from GIT
+- [git-clone-operator](https://github.com/riotkit-org/git-clone-operator) for provisioning of Persistent Volumes from GIT
 - [volume-syncing-operator](https://github.com/riotkit-org/volume-syncing-operator) for synchronizing Kubernetes Volumes to a cloud or on-premise storage
 
 Our security projects:
