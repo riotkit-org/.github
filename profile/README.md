@@ -1,6 +1,6 @@
 ## Hi there 👋
 
-We are a group of people creating tools for adoption of new technologies in low budget projects like activists networks or various smaller organizations.
+We are a group of people creating tools for adoption of new technologies in low budget projects like activists networks or various smaller organizations. We do not host software, we create it and give advices about the usage ;-)
 
 Our Kubernetes ecosystem:
 - [git-clone-controller](https://github.com/riotkit-org/git-clone-controller) for provisioning of Persistent Volumes from GIT
