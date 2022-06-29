@@ -3,8 +3,9 @@
 We are a group of people creating tools for adoption of new technologies in low budget projects like activists networks or various smaller organizations.
 
 Our Kubernetes ecosystem:
-- [git-clone-operator](https://github.com/riotkit-org/git-clone-operator) for provisioning of Persistent Volumes from GIT
-- [volume-syncing-operator](https://github.com/riotkit-org/volume-syncing-operator) for synchronizing Kubernetes Volumes to a cloud or on-premise storage
+- [git-clone-controller](https://github.com/riotkit-org/git-clone-controller) for provisioning of Persistent Volumes from GIT
+- [volume-syncing-controller](https://github.com/riotkit-org/volume-syncing-controller) for synchronizing Kubernetes Volumes to a cloud or on-premise storage
+- [Space Harbor](https://github.com/riotkit-org/k3s-space-harbor) - lightweight Kubernetes + VPN setup
 
 Our security projects:
 - [waf-proxy](https://github.com/riotkit-org/waf-proxy) to guard applications against attacks
