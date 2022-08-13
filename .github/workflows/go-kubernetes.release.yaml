@@ -1,6 +1,11 @@
 name: Test and release
 on:
     workflow_call:
+        secrets:
+            # sonarCloudEnabled must be enabled
+            SONAR_TOKEN:
+                type: string
+                required: false
         inputs:
             goVersion:
                 type: string
