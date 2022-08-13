@@ -68,7 +68,7 @@ jobs:
 
     release-binary:
         runs-on: ubuntu-20.04
-        needs: ["test-and-build"]
+        needs: ["build"]
         if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
         steps:
             - uses: actions/download-artifact@v3
@@ -84,7 +84,7 @@ jobs:
 
     release-docker:
         runs-on: ubuntu-20.04
-        needs: ["test-and-build"]
+        needs: ["build"]
         if: (contains(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main') && inputs.dockerReleasingEnabled
         steps:
             - name: Checkout
