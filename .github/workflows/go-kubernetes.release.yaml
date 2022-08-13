@@ -4,7 +4,6 @@ on:
         secrets:
             # sonarCloudEnabled must be enabled
             SONAR_TOKEN:
-                type: string
                 required: false
         inputs:
             goVersion:
