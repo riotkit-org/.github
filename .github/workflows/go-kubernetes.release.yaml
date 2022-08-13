@@ -2,8 +2,11 @@ name: Test and release
 on:
     workflow_call:
         secrets:
-            # sonarCloudEnabled must be enabled
+            # required when `sonarCloudEnabled`
             SONAR_TOKEN:
+                required: false
+            # required when `publishingHelmChartEnabled`
+            GH_RW_TOKEN:
                 required: false
         inputs:
             goVersion:
