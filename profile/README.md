@@ -6,6 +6,7 @@ Our Kubernetes ecosystem:
 - [git-clone-controller](https://github.com/riotkit-org/git-clone-controller) for provisioning of Persistent Volumes from GIT
 - [volume-syncing-controller](https://github.com/riotkit-org/volume-syncing-controller) for synchronizing Kubernetes Volumes to a cloud or on-premise storage
 - [Space Harbor](https://github.com/riotkit-org/k3s-space-harbor) - lightweight Kubernetes + VPN setup
+- [Core Services](https://github.com/riotkit-org/core-services) - services outside Kubernetes to make the disaster recovery easier
 
 Our security projects:
 - [waf-proxy](https://github.com/riotkit-org/waf-proxy) to guard applications against attacks
