@@ -85,6 +85,7 @@ jobs:
 
             - name: Test report
               if: always() && inputs.testReportEnabled
+              uses: phoenix-actions/test-reporting@v8
               with:
                   name: Tests
                   path: ${{ inputs.testReportPattern }}
