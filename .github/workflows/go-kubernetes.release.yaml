@@ -39,8 +39,18 @@ on:
             dockerReleasingEnabled:
                 type: boolean
                 default: true
-
-
+            testReportEnabled:
+                type: boolean
+                default: false
+            testReportPattern:
+                type: string
+                default: "junit.xml"
+            coverageReportEnabled:
+                type: boolean
+                default: false
+            coverageReportPath:
+                type: string
+                default: "coverage.out"
 jobs:
     build:
         runs-on: ubuntu-20.04
@@ -73,6 +83,19 @@ jobs:
                   name: binary
                   path: .build/${{ inputs.binaryName }}
 
+            - name: Test report
+              if: always() && inputs.testReportEnabled
+              with:
+                  name: Tests
+                  path: ${{ inputs.testReportPattern }}
+                  reporter: java-junit
+
+            - name: Coverage report
+              if: always() && ! contains(github.event.pull_request.user.login, 'dependabot[bot]') && inputs.coverageReportEnabled
+              uses: slavcodev/coverage-monitor-action@v1
+              with:
+                github_token: ${{ secrets.GITHUB_TOKEN }}
+                coverage_path: ${{ inputs.coverageReportPath }}
     release-binary:
         runs-on: ubuntu-20.04
         needs: ["build"]
