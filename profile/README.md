@@ -15,4 +15,5 @@ Our security projects:
 Our Backup ecosystem:
 - [backup-repository](https://github.com/riotkit-org/backup-repository) to store End-To-End encrypted backups in a multi-user environment
 - [pgbr](https://github.com/riotkit-org/br-pgbr), a PostgreSQL automation wrapper
+- [backup-maker-controller](https://github.com/riotkit-org/backup-maker-controller), a Kubernetes controller automating backups creation & restore
 - [br-backup-maker](https://github.com/riotkit-org/br-backup-maker), a Backup Repository client
