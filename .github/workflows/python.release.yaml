@@ -1,0 +1,96 @@
+name: Test and release
+on:
+    workflow_call:
+        secrets:
+            # required when `sonarCloudEnabled`
+            SONAR_TOKEN:
+                required: false
+        inputs:
+            #
+            # Technical
+            #
+            os:
+                description: "Operating system e.g. ubuntu-22.04"
+                type: string
+                default: ubuntu-22.04
+            pythonVersion:
+                description: "Python version"
+                type: string
+                default: "3.11"
+
+            #
+            # Testing
+            #
+            prepareCmd:
+                description: "Preparation command. Defaults to pipenv installation (skipped if empty)"
+                type: string
+                default: "python -m pip install --upgrade pipenv wheel"
+            testCmd:
+                description: "Test command (skipped if empty)"
+                type: boolean
+                default: "make test"
+
+            #
+            # Tests reporting
+            #
+            testReportEnabled:
+                type: boolean
+                default: false
+            testReportPattern:
+                type: string
+                default: "junit.xml"
+            coverageReportEnabled:
+                type: boolean
+                default: false
+            coverageReportPath:
+                type: string
+                default: "coverage.out"
+
+
+jobs:
+    build-and-test:
+        runs-on: ${{ inputs.os }}
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+
+            - name: Prepare Python
+              uses: actions/setup-python@v3
+              with:
+                  python-version: "${{ inputs.pythonVersion }}"
+                  architecture: "x64"
+
+            - name: Prepare
+              if: "${{ inputs.prepareCmd }} != ''"
+              run: "${{ inputs.prepareCmd }}"
+
+            - name: Test
+              if: "${{ inputs.testCmd }} != ''"
+              run: "${{ inputs.testCmd }}"
+
+            #
+            # Reporting
+            #
+            - name: Test report
+              if: always() && inputs.testReportEnabled
+              uses: phoenix-actions/test-reporting@v8
+              with:
+                  name: Tests
+                  path: ${{ inputs.testReportPattern }}
+                  reporter: java-junit
+
+            - name: Coverage report
+              if: always() && ! contains(github.event.pull_request.user.login, 'dependabot[bot]') && inputs.coverageReportEnabled
+              uses: slavcodev/coverage-monitor-action@v1
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  coverage_path: ${{ inputs.coverageReportPath }}
+
+            - name: SonarCloud Scan
+              uses: sonarsource/sonarcloud-github-action@master
+              if: github.ref == 'refs/heads/main' && inputs.sonarCloudEnabled
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
