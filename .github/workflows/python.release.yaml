@@ -27,7 +27,7 @@ on:
                 default: "python -m pip install --upgrade pipenv wheel"
             testCmd:
                 description: "Test command (skipped if empty)"
-                type: boolean
+                type: string
                 default: "make test"
 
             #
