@@ -45,6 +45,9 @@ on:
             coverageReportPath:
                 type: string
                 default: "coverage.out"
+            sonarCloudEnabled:
+                type: boolean
+                default: false
 
 
 jobs:
