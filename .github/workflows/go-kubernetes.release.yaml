@@ -30,6 +30,10 @@ on:
             chartRepoBranch:
                 type: string
                 default: "gh-pages"
+            chartsDir:
+                description: "Local directory, where chart is placed"
+                type: string
+                default: "helm"
             sonarCloudEnabled:
                 type: boolean
                 default: false
@@ -171,7 +175,7 @@ jobs:
               uses: stefanprodan/helm-gh-pages@master
               with:
                   token: "${{ secrets.GH_RW_TOKEN }}"
-                  charts_dir: helm
+                  charts_dir: ${{ inputs.chartsDir }}
                   charts_url: ${{ inputs.chartsRepoUrl }}
                   owner: ${{ inputs.chartOwner }}
                   repository: ${{ inputs.chartRepository }}
