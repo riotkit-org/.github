@@ -180,15 +180,18 @@ jobs:
               with:
                   cmd: |
                       set -e
+                      chartsDir=${{ inputs.chartsDir }}
+                      version=${{github.ref_name}}
+                      dotPath=${{inputs.chartImageTagPath}}
                       
-                      for chartName in $(ls ${{ inputs.chartsDir }}); do
-                          if [[ ! -f "${{ inputs.chartsDir }}/${chartName}/Chart.yaml" ]]; then
-                              echo " >> ${{ inputs.chartsDir }}/${chartName}/Chart.yaml not present, skipping"
+                      for chartName in $(ls ${chartsDir}); do
+                          if [[ ! -f "${chartsDir}/${chartName}/Chart.yaml" ]]; then
+                              echo " >> ${chartsDir}/${chartName}/Chart.yaml not present, skipping"
                               continue
                           fi
-                          yq e -i ".version = \"${{github.ref_name}}\"" "${{ inputs.chartsDir }}/${chartName}/Chart.yaml"
-                          yq e -i ".appVersion = \"${{github.ref_name}}\"" "${{ inputs.chartsDir }}/${chartName}/Chart.yaml"
-                          yq e -i "${{inputs.chartImageTagPath}} = \"${{github.ref_name}}\"" "${{ inputs.chartsDir }}/${chartName}/values.yaml"
+                          yq e -i ".version = \"${version/v/}\"" "${chartsDir}/${chartName}/Chart.yaml"
+                          yq e -i ".appVersion = \"${version}\"" "${chartsDir}/${chartName}/Chart.yaml"
+                          yq e -i "${dotPath} = \"${version}\"" "${chartsDir}/${chartName}/values.yaml"
                       done
 
             - name: Publish Helm chart
