@@ -185,7 +185,7 @@ jobs:
                       dotPath=${{inputs.chartImageTagPath}}
                       
                       for chartName in $(ls ${chartsDir}); do
-                          if [[ ! -f "${chartsDir}/${chartName}/Chart.yaml" ]]; then
+                          if [ ! -f "${chartsDir}/${chartName}/Chart.yaml" ]; then
                               echo " >> ${chartsDir}/${chartName}/Chart.yaml not present, skipping"
                               continue
                           fi
@@ -197,7 +197,7 @@ jobs:
             - name: Set version
               uses: mikefarah/yq@v4.30.6
               with:
-                  cmd: bash set-version.sh
+                  cmd: sh set-version.sh
 
             - name: Publish Helm chart
               uses: stefanprodan/helm-gh-pages@master
