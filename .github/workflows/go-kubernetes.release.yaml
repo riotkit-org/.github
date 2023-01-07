@@ -34,6 +34,10 @@ on:
                 description: "Local directory, where chart is placed"
                 type: string
                 default: "helm"
+            chartImageTagPath:
+                description: "Path to the image tag name in values.yaml (dot notation)"
+                type: string
+                default: ".image.tag"
             sonarCloudEnabled:
                 type: boolean
                 default: false
@@ -170,6 +174,14 @@ jobs:
               run: |
                   git config user.name "$GITHUB_ACTOR"
                   git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+                  
+            - name: Set version
+              uses: mikefarah/yq@v4.30.6
+              with:
+                  cmd: |
+                      yq e -i ".version = \"${{github.ref_name}}\"" Chart.yaml
+                      yq e -i ".appVersion = \"${{github.ref_name}}\"" Chart.yaml
+                      yq e -i "${{inputs.chartImageTagPath}} = \"${{github.ref_name}}\"" values.yaml
 
             - name: Publish Helm chart
               uses: stefanprodan/helm-gh-pages@master
