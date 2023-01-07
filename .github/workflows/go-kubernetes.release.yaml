@@ -175,10 +175,10 @@ jobs:
                   git config user.name "$GITHUB_ACTOR"
                   git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
                   
-            - name: Set version
-              uses: mikefarah/yq@v4.30.6
+            - uses: DamianReeves/write-file-action@v1.2
               with:
-                  cmd: |
+                  path: set-version.sh
+                  contents: |
                       set -e
                       chartsDir=${{ inputs.chartsDir }}
                       version=${{github.ref_name}}
@@ -193,6 +193,11 @@ jobs:
                           yq e -i ".appVersion = \"${version}\"" "${chartsDir}/${chartName}/Chart.yaml"
                           yq e -i "${dotPath} = \"${version}\"" "${chartsDir}/${chartName}/values.yaml"
                       done
+
+            - name: Set version
+              uses: mikefarah/yq@v4.30.6
+              with:
+                  cmd: bash set-version.sh
 
             - name: Publish Helm chart
               uses: stefanprodan/helm-gh-pages@master
