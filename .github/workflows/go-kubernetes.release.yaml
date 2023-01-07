@@ -179,6 +179,8 @@ jobs:
               uses: mikefarah/yq@v4.30.6
               with:
                   cmd: |
+                      set -e
+                      cd ${{ inputs.chartsDir }}/$(ls ${{ inputs.chartsDir }})
                       yq e -i ".version = \"${{github.ref_name}}\"" Chart.yaml
                       yq e -i ".appVersion = \"${{github.ref_name}}\"" Chart.yaml
                       yq e -i "${{inputs.chartImageTagPath}} = \"${{github.ref_name}}\"" values.yaml
