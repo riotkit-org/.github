@@ -180,10 +180,16 @@ jobs:
               with:
                   cmd: |
                       set -e
-                      cd ${{ inputs.chartsDir }}/$(ls ${{ inputs.chartsDir }})
-                      yq e -i ".version = \"${{github.ref_name}}\"" Chart.yaml
-                      yq e -i ".appVersion = \"${{github.ref_name}}\"" Chart.yaml
-                      yq e -i "${{inputs.chartImageTagPath}} = \"${{github.ref_name}}\"" values.yaml
+                      
+                      for chartName in $(ls ${{ inputs.chartsDir }}); do
+                          if [[ ! -f "${{ inputs.chartsDir }}/${chartName}/Chart.yaml" ]]; then
+                              echo " >> ${{ inputs.chartsDir }}/${chartName}/Chart.yaml not present, skipping"
+                              continue
+                          fi
+                          yq e -i ".version = \"${{github.ref_name}}\"" "${{ inputs.chartsDir }}/${chartName}/Chart.yaml"
+                          yq e -i ".appVersion = \"${{github.ref_name}}\"" "${{ inputs.chartsDir }}/${chartName}/Chart.yaml"
+                          yq e -i "${{inputs.chartImageTagPath}} = \"${{github.ref_name}}\"" "${{ inputs.chartsDir }}/${chartName}/values.yaml"
+                      done
 
             - name: Publish Helm chart
               uses: stefanprodan/helm-gh-pages@master
