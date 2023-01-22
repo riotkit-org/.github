@@ -30,7 +30,7 @@ jobs:
                   fetch-depth: 0
 
             - name: Create version string
-              shell: python3
+              shell: python
               id: version
               run: |
                   import os
