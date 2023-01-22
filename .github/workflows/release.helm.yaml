@@ -12,9 +12,6 @@ on:
             # ------------------
             # Helm Chart release
             # ------------------
-            publishingHelmChartEnabled:
-                type: boolean
-                default: false
             chartPath:
                 type: string
                 default: ""
@@ -27,7 +24,7 @@ jobs:
     release-chart:
         runs-on: ${{ inputs.osVariant }}
         needs: ["release-docker"]
-        if: github.event_name == 'push' && contains(github.ref, 'refs/tags/') && inputs.publishingHelmChartEnabled
+        if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
         steps:
             - name: Checkout
               uses: actions/checkout@v3
