@@ -30,17 +30,13 @@ jobs:
                   fetch-depth: 0
 
             - name: Create version string
-              shell: python
               id: version
               run: |
-                  import os
-                  
-                  ref = "${{ github.ref_name }}"
-                  if ref in ["main", "master"]:
-                      ref = "0.0-latest"
-                  
-                  with open(os.getenv("GITHUB_OUTPUT"), "a") as f:
-                      f.write("ref=" + ref + "\n")
+                  ref="${{ github.ref_name }}"
+                  if [[ "$(git log -n 1 --pretty=%d HEAD)" != *"tag:"* ]]; then
+                      ref="0.0-latest-${{ github.ref_name }}"
+                  fi
+                  echo "ref=${ref}"
 
             - name: Publish Helm Chart to the OCI registry
               uses: appany/helm-oci-chart-releaser@v0.3.0
