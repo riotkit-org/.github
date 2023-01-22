@@ -16,6 +16,7 @@ on:
 jobs:
     release-binary:
         runs-on: ${{ inputs.osVariant }}
+        if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
         steps:
             - uses: actions/download-artifact@v3
               with:
