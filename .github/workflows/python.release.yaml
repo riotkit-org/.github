@@ -6,9 +6,9 @@ on:
             SONAR_TOKEN:
                 required: false
         inputs:
-            #
+            # ---------
             # Technical
-            #
+            # ---------
             os:
                 description: "Operating system e.g. ubuntu-22.04"
                 type: string
@@ -18,9 +18,9 @@ on:
                 type: string
                 default: "3.11"
 
-            #
+            # -------
             # Testing
-            #
+            # -------
             prepareCmd:
                 description: "Preparation command. Defaults to pipenv installation (skipped if empty)"
                 type: string
@@ -30,9 +30,9 @@ on:
                 type: boolean
                 default: "make test"
 
-            #
+            # ---------------
             # Tests reporting
-            #
+            # ---------------
             testReportEnabled:
                 type: boolean
                 default: false
@@ -45,7 +45,6 @@ on:
             coverageReportPath:
                 type: string
                 default: "coverage.out"
-
 
 jobs:
     build-and-test:
@@ -70,9 +69,9 @@ jobs:
               if: "${{ inputs.testCmd }} != ''"
               run: "${{ inputs.testCmd }}"
 
-            #
+            # ---------
             # Reporting
-            #
+            # ---------
             - name: Test report
               if: always() && inputs.testReportEnabled
               uses: phoenix-actions/test-reporting@v8
