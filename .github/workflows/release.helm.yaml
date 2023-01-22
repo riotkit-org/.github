@@ -36,7 +36,7 @@ jobs:
                   if [[ "$(git log -n 1 --pretty=%d HEAD)" != *"tag:"* ]]; then
                       ref="0.0-latest-${{ github.ref_name }}"
                   fi
-                  echo "ref=${ref}"
+                  echo "ref=${ref}" >> $GITHUB_OUTPUT
 
             - name: Publish Helm Chart to the OCI registry
               uses: appany/helm-oci-chart-releaser@v0.3.0
