@@ -1,0 +1,50 @@
+name: Release container
+on:
+    workflow_call:
+        inputs:
+            osVariant:
+                type: string
+                default: "ubuntu-22.04"
+            intermediateArtifactsPath:
+                description: "Directory, where build artifacts copied between job stages are kept"
+                type: string
+                default: ".build/"
+            dockerImage:
+                type: string
+                required: true
+
+jobs:
+    release-docker:
+        runs-on: ${{ inputs.osVariant }}
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+              with:
+                  fetch-depth: 0
+
+            - uses: actions/download-artifact@v3
+              if: inputs.intermediateArtifactsPath != ""
+              with:
+                  name: binary
+                  path: ${{ inputs.intermediateArtifactsPath }}
+
+            - name: Login to GitHub Container Registry
+              uses: docker/login-action@v1
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Create docker tags
+              id: meta
+              uses: docker/metadata-action@v3
+              with:
+                  images: ${{ inputs.dockerImage }}
+
+            - name: Build and release docker
+              uses: docker/build-push-action@v2
+              with:
+                  context: .
+                  push: ${{ github.event_name != 'pull_request' }}
+                  tags: ${{ steps.meta.outputs.tags }}
+                  labels: ${{ steps.meta.outputs.labels }}

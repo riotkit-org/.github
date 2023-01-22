@@ -1,0 +1,29 @@
+name: Release binaries
+on:
+    workflow_call:
+        inputs:
+            osVariant:
+                type: string
+                default: "ubuntu-22.04"
+            intermediateArtifactsPath:
+                description: "Directory, where build artifacts copied between job stages are kept"
+                type: string
+                default: ".build/"
+            binaryName:
+                type: string
+                required: true
+
+jobs:
+    release-binary:
+        runs-on: ${{ inputs.osVariant }}
+        steps:
+            - uses: actions/download-artifact@v3
+              with:
+                  name: binary
+                  path: ${{ inputs.intermediateArtifactsPath }}
+
+            - name: Release binaries to GitHub releases
+              uses: softprops/action-gh-release@v1
+              with:
+                  files: |
+                      ${{ inputs.intermediateArtifactsPath }}/${{ inputs.binaryName }}

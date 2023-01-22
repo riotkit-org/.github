@@ -1,0 +1,105 @@
+name: Build & Test
+on:
+    workflow_call:
+        secrets:
+            # required when `sonarCloudEnabled`
+            SONAR_TOKEN:
+                required: false
+        inputs:
+            # -----------------
+            # System & Versions
+            # -----------------
+            goVersion:
+                type: string
+                default: 1.19
+            osVariant:
+                type: string
+                default: "ubuntu-22.04"
+
+            # -----------------
+            # Produced artifact
+            # -----------------
+            binaryName:
+                type: string
+                required: true
+            intermediateArtifactsPath:
+                description: "Directory, where build artifacts copied between job stages are kept"
+                type: string
+                default: ".build/"
+
+            # -------
+            # Testing
+            # -------
+            sonarCloudEnabled:
+                type: boolean
+                default: false
+            dockerReleasingEnabled:
+                type: boolean
+                default: true
+            testReportEnabled:
+                type: boolean
+                default: false
+            testReportPattern:
+                type: string
+                default: "junit.xml"
+            coverageReportEnabled:
+                type: boolean
+                default: false
+            coverageReportPath:
+                type: string
+                default: "coverage.out"
+
+            testCmd:
+                type: string
+                default: "make coverage"
+
+            buildCmd:
+                type: string
+                default: "make build"
+
+jobs:
+    build:
+        runs-on: ${{ inputs.osVariant }}
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+
+            - name: Set up Go
+              uses: actions/setup-go@v3
+              with:
+                  go-version: ${{ inputs.goVersion }}
+
+            - name: Build
+              run: "${{ inputs.buildCmd }}"
+
+            - name: Test
+              run: "${{ inputs.testCmd }}"
+
+            - name: SonarCloud Scan
+              uses: sonarsource/sonarcloud-github-action@master
+              if: github.ref == 'refs/heads/main' && inputs.sonarCloudEnabled
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+            - uses: actions/upload-artifact@v3
+              with:
+                  name: binary
+                  path: ${{ inputs.intermediateArtifactsPath }}/${{ inputs.binaryName }}
+
+            - name: Test report
+              if: always() && inputs.testReportEnabled
+              uses: phoenix-actions/test-reporting@v8
+              with:
+                  name: Tests
+                  path: ${{ inputs.testReportPattern }}
+                  reporter: java-junit
+
+            - name: Coverage report
+              if: always() && ! contains(github.event.pull_request.user.login, 'dependabot[bot]') && inputs.coverageReportEnabled
+              uses: slavcodev/coverage-monitor-action@v1
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  coverage_path: ${{ inputs.coverageReportPath }}
