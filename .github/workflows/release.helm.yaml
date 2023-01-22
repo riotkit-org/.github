@@ -23,7 +23,6 @@ on:
 jobs:
     release-chart:
         runs-on: ${{ inputs.osVariant }}
-        needs: ["release-docker"]
         if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
         steps:
             - name: Checkout
