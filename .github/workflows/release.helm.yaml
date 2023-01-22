@@ -29,12 +29,25 @@ jobs:
               with:
                   fetch-depth: 0
 
+            - name: Create version string
+              shell: python3
+              id: version
+              run: |
+                  import os
+                  
+                  ref = "${{ github.ref_name }}"
+                  if ref in ["main", "master"]:
+                      ref = "0.0-latest"
+                  
+                  with open(os.getenv("GITHUB_OUTPUT"), "a") as f:
+                      f.write("ref=" + ref + "\n")
+
             - name: Publish Helm Chart to the OCI registry
               uses: appany/helm-oci-chart-releaser@v0.3.0
               with:
                   name: ${{ github.event.repository.name }}
                   repository: ${{ github.event.org.login }}${{ inputs.chartRepoSuffix }}
-                  tag: ${{ github.ref_name }}
+                  tag: ${{ steps.version.outputs.ref }}
                   path: ${{ inputs.chartPath }}
                   registry: ghcr.io
                   registry_username: ${{ github.actor }}
