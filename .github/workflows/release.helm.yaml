@@ -15,10 +15,9 @@ on:
             chartPath:
                 type: string
                 default: ""
-            chartRepoSuffix:
-                description: "Repository name suffix, can be a subdirectory. Example full URL with suffix: ghcr.io/riotkit-org/charts/pgbr:1.0.1"
+            chartRepoName:
+                description: "Repository name e.g. org-name/charts"
                 type: string
-                default: "charts/"
 
 jobs:
     release-chart:
@@ -42,7 +41,7 @@ jobs:
               uses: appany/helm-oci-chart-releaser@v0.3.0
               with:
                   name: ${{ github.event.repository.name }}
-                  repository: ${{ github.event.org.login }}${{ inputs.chartRepoSuffix }}
+                  repository: ${{ inputs.chartRepoName }}
                   tag: ${{ steps.version.outputs.ref }}
                   path: ${{ inputs.chartPath }}
                   registry: ghcr.io
