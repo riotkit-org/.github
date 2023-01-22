@@ -23,7 +23,7 @@ jobs:
                   fetch-depth: 0
 
             - uses: actions/download-artifact@v3
-              if: inputs.intermediateArtifactsPath != ""
+              if: "inputs.intermediateArtifactsPath != ''"
               with:
                   name: binary
                   path: ${{ inputs.intermediateArtifactsPath }}
