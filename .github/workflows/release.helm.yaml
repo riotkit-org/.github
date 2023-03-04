@@ -18,6 +18,9 @@ on:
             chartRepoName:
                 description: "Repository name e.g. org-name/charts"
                 type: string
+            chartName:
+                type: string
+                default: ""
 
 jobs:
     release-chart:
@@ -28,9 +31,10 @@ jobs:
               with:
                   fetch-depth: 0
 
-            - name: Create version string
-              id: version
+            - name: Calculate facts
+              id: facts
               run: |
+                  # version
                   ref="${{ github.ref_name }}"
                   if [[ "$(git log -n 1 --pretty=%d HEAD)" != *"tag:"* ]]; then
                       ref="0.0-latest-${{ github.ref_name }}"
@@ -40,9 +44,9 @@ jobs:
             - name: Publish Helm Chart to the OCI registry
               uses: appany/helm-oci-chart-releaser@v0.3.0
               with:
-                  name: ${{ github.event.repository.name }}
+                  name: ${{ inputs.chartName || github.event.repository.name }}
                   repository: ${{ inputs.chartRepoName }}
-                  tag: ${{ steps.version.outputs.ref }}
+                  tag: ${{ steps.facts.outputs.ref }}
                   path: ${{ inputs.chartPath }}
                   registry: ghcr.io
                   registry_username: ${{ github.actor }}
