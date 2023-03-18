@@ -50,7 +50,7 @@ jobs:
                   echo "ref=${ref}" >> $GITHUB_OUTPUT
 
             - name: Verify Helm syntax
-              shell: "cd ${{ inputs.chartPath } && helm lint ./ && helm template ./ --debug"
+              run: "cd ${{ inputs.chartPath } && helm lint ./ && helm template ./ --debug"
 
             - name: Publish Helm Chart to the OCI registry
               uses: appany/helm-oci-chart-releaser@v0.3.0
