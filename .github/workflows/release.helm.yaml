@@ -8,6 +8,9 @@ on:
             osVariant:
                 type: string
                 default: "ubuntu-22.04"
+            helmVersion:
+                type: string
+                default: "v3.11.2"
 
             # ------------------
             # Helm Chart release
@@ -26,6 +29,11 @@ jobs:
     release-chart:
         runs-on: ${{ inputs.osVariant }}
         steps:
+            - name: Set up Helm
+              uses: azure/setup-helm@v3
+              with:
+                  version: "${{ inputs.helmVersion }}"
+        
             - name: Checkout
               uses: actions/checkout@v3
               with:
@@ -40,6 +48,9 @@ jobs:
                       ref="0.0-latest-${{ github.ref_name }}"
                   fi
                   echo "ref=${ref}" >> $GITHUB_OUTPUT
+
+            - name: Verify Helm syntax
+              shell: "cd ${{ inputs.chartPath } && helm lint ./ && helm template ./ --debug"
 
             - name: Publish Helm Chart to the OCI registry
               uses: appany/helm-oci-chart-releaser@v0.3.0
