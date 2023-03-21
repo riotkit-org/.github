@@ -35,7 +35,7 @@ on:
             prepareEnvCmd:
                 description: "Environment preparation command"
                 type: string
-                default: "make -f env.mk skaffold-deploy"
+                default: "make -f env.mk k3d skaffold-deploy"
             testCmd:
                 description: "Test command"
                 type: string
