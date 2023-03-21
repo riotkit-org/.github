@@ -13,12 +13,16 @@ if [[ ! -f .env ]]; then
 fi
 
 echo " >> Configuring git ignore"
+gitIgnoreEntries=( "kuttl-report.xml" "/.build/*" "/kubeconfig" )
 if [[ ! -f .gitignore ]]; then
     echo "" > .gitignore
 fi
-if [[ $(cat .gitignore) != *".build/"* ]]; then
-    echo "/.build/*" > .gitignore
-fi
+for entry in ${gitIgnoreEntries[@]}; do
+    echo "   .. ${entry} "
+    if [[ $(cat .gitignore) != *"${entry}"* ]]; then
+        echo "${entry}" > .gitignore
+    fi
+done
 
 echo " >> Configuring Skaffold"
 if [[ ! -f skaffold.yaml ]]; then
