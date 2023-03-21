@@ -34,6 +34,8 @@ prepare-tools:  ## Installs required tools
 	@test -f ./.build/helm || (curl -sL https://get.helm.sh/helm-v3.11.2-linux-amd64.tar.gz --output /tmp/helm.tar.gz && tar xf /tmp/helm.tar.gz -C /tmp && mv /tmp/linux-amd64/helm ./.build/helm && chmod +x ./.build/helm)
 	# kubens
 	@test -f ./.build/kubens || (curl -sL https://raw.githubusercontent.com/ahmetb/kubectx/master/kubens --output ./.build/kubens && chmod +x ./.build/kubens)
+	# kuttl
+	@test -f ./.build/kuttl || (curl -sL https://github.com/kudobuilder/kuttl/releases/download/v0.15.0/kubectl-kuttl_0.15.0_linux_x86_64 --output ./.build/kuttl && chmod +x ./.build/kuttl)
 
 skaffold-deploy: prepare-tools  ## Deploys app with dependencies using Skaffold
 	skaffold deploy -p deps
@@ -46,3 +48,9 @@ skaffold-deploy: prepare-tools  ## Deploys app with dependencies using Skaffold
 dev: ## Runs the development environment in Kubernetes
 	skaffold deploy -p deps
 	skaffold dev -p app --tag e2e --assume-yes=true --default-repo ${ENV_CLUSTER_NAME}-registry:5000 --force=true
+
+
+## Frameworks support
+_pytest:
+	pipenv sync
+	pipenv run pytest -s
