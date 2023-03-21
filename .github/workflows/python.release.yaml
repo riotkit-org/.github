@@ -66,14 +66,14 @@ jobs:
               run: "${{ inputs.prepareCmd }}"
 
             - name: Test
-              if: "${{ inputs.testCmd }} != ''"
+              if: "${{ inputs.testCmd }} != '' && !contains(github.event.head_commit.message, '!test skip')"
               run: "${{ inputs.testCmd }}"
 
             # ---------
             # Reporting
             # ---------
             - name: Test report
-              if: always() && inputs.testReportEnabled
+              if: always() && inputs.testReportEnabled && !contains(github.event.head_commit.message, '!test skip')
               uses: phoenix-actions/test-reporting@v8
               with:
                   name: Tests
@@ -81,7 +81,7 @@ jobs:
                   reporter: java-junit
 
             - name: Coverage report
-              if: always() && ! contains(github.event.pull_request.user.login, 'dependabot[bot]') && inputs.coverageReportEnabled
+              if: always() && ! contains(github.event.pull_request.user.login, 'dependabot[bot]') && inputs.coverageReportEnabled && !contains(github.event.head_commit.message, '!test skip')
               uses: slavcodev/coverage-monitor-action@v1
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -89,7 +89,7 @@ jobs:
 
             - name: SonarCloud Scan
               uses: sonarsource/sonarcloud-github-action@master
-              if: github.ref == 'refs/heads/main' && inputs.sonarCloudEnabled
+              if: github.ref == 'refs/heads/main' && inputs.sonarCloudEnabled && !contains(github.event.head_commit.message, '!sonar skip')
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
