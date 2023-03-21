@@ -29,5 +29,5 @@ echo " >> Adding files to git and pushing changes"
 git config --global user.email "example@example.org"
 git config --global user.name "Riotkit via Github Actions"
 git add .env env.mk .gitignore skaffold.yaml
-git commit -m "chore: Configure environment setup (automatic) / Riotkit"
+git commit -m "chore: Configure environment setup (automatic) / Riotkit" || true
 git push
