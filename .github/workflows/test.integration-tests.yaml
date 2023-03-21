@@ -1,0 +1,110 @@
+name: Release Helm Chart
+on:
+    workflow_call:
+        inputs:
+            # ======
+            # On/Off
+            # ======
+            pythonEnabled:
+                description: "Is this project using Python?"
+                default: false
+                type: boolean
+            goEnabled:
+                description: "Is this project using Go?"
+                default: false
+                type: boolean
+
+            # ========
+            # Versions
+            # ========
+            pythonVersion:
+                description: "Python version"
+                type: string
+                default: "3.11"
+            goVersion:
+                description: "Go version"
+                type: string
+                default: "1.20"
+            osVariant:
+                type: string
+                default: "ubuntu-22.04"
+
+            # =======
+            # Testing
+            # =======
+            prepareEnvCmd:
+                description: "Environment preparation command"
+                type: string
+                default: "make -f env.mk skaffold-deploy"
+            testCmd:
+                description: "Test command"
+                type: string
+                default: "make integration-test"
+
+            # ---------------
+            # Tests reporting
+            # ---------------
+            testReportEnabled:
+                type: boolean
+                default: false
+            testReportPattern:
+                type: string
+                default: "junit.xml"
+
+            # internal
+            selfVersion:
+                default: "release-1"
+                type: string
+
+jobs:
+    test:
+        runs-on: ${{ inputs.osVariant }}
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+
+            - name: Prepare Python
+              uses: actions/setup-python@v3
+              if: inputs.pythonEnabled
+              with:
+                  python-version: "${{ inputs.pythonVersion }}"
+                  architecture: "x64"
+
+            - name: Prepare Python
+              uses: actions/setup-go@v3
+              if: inputs.goEnabled
+              with:
+                  go-version: "${{ inputs.goVersion }}"
+
+            # Sets up the testing environment by fetching it and commiting directly into the repository
+            - name: Setup workspace
+              run: |
+                  curl -Ls https://raw.githubusercontent.com/riotkit-org/.github/${{ inputs.selfVersion }}/workflows/integration-tests/setup.sh | bash -
+
+            - name: Setup local environment
+              run: |
+                  ${{ inputs.prepareEnvCmd }}
+
+            - name: Test
+              run: |
+                  ${{ inputs.testCmd }}
+
+            # ---------
+            # Reporting
+            # ---------
+            - name: Test report
+              if: always() && inputs.testReportEnabled && !contains(github.event.head_commit.message, '!report skip')
+              uses: phoenix-actions/test-reporting@v8
+              with:
+                  name: Tests
+                  path: ${{ inputs.testReportPattern }}
+                  reporter: java-junit
+
+            - name: Coverage report
+              if: always() && ! contains(github.event.pull_request.user.login, 'dependabot[bot]') && inputs.coverageReportEnabled && !contains(github.event.head_commit.message, '!report skip')
+              uses: slavcodev/coverage-monitor-action@v1
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  coverage_path: ${{ inputs.coverageReportPath }}
