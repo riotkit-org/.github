@@ -65,7 +65,7 @@ jobs:
                   fi
 
             - name: Generate README.md
-              if: steps.facts.outputs.docs == "true" || inputs.enableHelmDocs
+              if: ${{ steps.facts.outputs.docs == "true" || inputs.enableHelmDocs }}
               run: |
                   docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) jnorwood/helm-docs:${{ inputs.helmDocsVersion }}
 
