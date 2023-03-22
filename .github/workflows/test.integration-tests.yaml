@@ -35,7 +35,11 @@ on:
             prepareEnvCmd:
                 description: "Environment preparation command"
                 type: string
-                default: "make -f env.mk k3d skaffold-deploy"
+                default: "make -f env.mk k3d skaffold-deploy-deps"
+            deployAppCmd:
+                description: "Deploy application (optional as it could be later deployed by other tool inside tests)"
+                type: string
+                default: ""  # e.g. "make -f env.mk skaffold-deploy-app"
             testCmd:
                 description: "Test command"
                 type: string
@@ -86,6 +90,11 @@ jobs:
             - name: Setup local environment
               run: |
                   ${{ inputs.prepareEnvCmd }}
+
+            - name: "Deploy app (optional - can be skipped in case, when other tool deploys it)"
+              if: inputs.deployAppCmd != ''
+              run: |
+                  ${{ inputs.deployAppCmd }}
 
             - name: Test
               run: |
