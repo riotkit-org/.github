@@ -11,6 +11,9 @@ on:
             helmVersion:
                 type: string
                 default: "v3.11.2"
+            helmDocsVersion:
+                type: string
+                default: "v1.11.0"
 
             # ------------------
             # Helm Chart release
@@ -24,6 +27,11 @@ on:
             chartName:
                 type: string
                 default: ""
+
+            enableHelmDocs:
+                description: "Enable helm-docs (https://github.com/norwoodj/helm-docs). Create README.md.gotmpl file to customize the template"
+                type: boolean
+                default: false
 
 jobs:
     release-chart:
@@ -48,6 +56,18 @@ jobs:
                       ref="0.0-latest-${{ github.ref_name }}"
                   fi
                   echo "ref=${ref}" >> $GITHUB_OUTPUT
+                  
+                  # helm-docs
+                  if [[ -f "${{ inputs.chartPath }}/README.md.gotmpl" ]]; then
+                      echo "docs=true" >> $GITHUB_OUTPUT
+                  else
+                      echo "docs=false" >> $GITHUB_OUTPUT 
+                  fi
+
+            - name: Generate README.md
+              if: steps.facts.outputs.docs == "true" || inputs.enableHelmDocs
+              run: |
+                  docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) jnorwood/helm-docs:${{ inputs.helmDocsVersion }}
 
             - name: Verify Helm syntax
               run: "cd ${{ inputs.chartPath }} && helm lint ./ && helm template ./ --debug"
