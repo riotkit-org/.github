@@ -49,6 +49,7 @@ jobs:
 
             - name: Calculate facts
               id: facts
+              # language=bash
               run: |
                   # version
                   ref="${{ github.ref_name }}"
@@ -66,10 +67,18 @@ jobs:
 
             - name: Generate README.md
               if: ${{ steps.facts.outputs.docs == 'true' || inputs.enableHelmDocs }}
+              # language=bash
               run: |
+                  cd ${{ inputs.chartPath }}
                   docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) jnorwood/helm-docs:${{ inputs.helmDocsVersion }}
+                  git config --global user.email "example@example.org"
+                  git config --global user.name "Riotkit via Github Actions"
+                  git add README.md
+                  git commit -m "chore: Bump README.md by release pipeline (automatic) / Riotkit" || true
+                  git push
 
             - name: Verify Helm syntax
+              # language=bash
               run: "cd ${{ inputs.chartPath }} && helm lint ./ && helm template ./ --debug"
 
             - name: Publish Helm Chart to the OCI registry
