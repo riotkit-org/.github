@@ -126,7 +126,7 @@ jobs:
               uses: appany/helm-oci-chart-releaser@v0.3.0
               with:
                   name: ${{ inputs.chartName || github.event.repository.name }}
-                  repository: ${{ inputs.chartRepoName }}
+                  repository: ${{ steps.facts.outputs.repo_name }}
                   tag: ${{ steps.facts.outputs.ref }}
                   path: ${{ inputs.chartPath }}
                   registry: ghcr.io
