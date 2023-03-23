@@ -51,7 +51,7 @@ on:
 
             testCmd:
                 type: string
-                default: "make coverage"
+                default: "make test"
 
             buildCmd:
                 type: string
