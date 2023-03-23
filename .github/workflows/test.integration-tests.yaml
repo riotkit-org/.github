@@ -81,6 +81,7 @@ jobs:
               if: inputs.goEnabled
               with:
                   go-version: "${{ inputs.goVersion }}"
+                  go-version-file: go.mod
 
             # Sets up the testing environment by fetching it and commiting directly into the repository
             - name: Setup workspace
