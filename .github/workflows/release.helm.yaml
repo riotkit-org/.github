@@ -58,9 +58,10 @@ jobs:
               id: facts
               # language=bash
               run: |
-                  # version
+                  # ===================
+                  # Chart version
+                  # ===================
                   ref="${{ github.ref_name }}"
-                  app_version="${ref}"
                   if [[ "$(git log -n 1 --pretty=%d HEAD)" != *"tag:"* ]]; then
                       ref="0.0-latest-${{ github.ref_name }}"
                   fi
@@ -70,19 +71,33 @@ jobs:
                   fi
                   echo "ref=${ref}" >> $GITHUB_OUTPUT
                   
+                  # ===================
                   # helm-docs
+                  # ===================
                   if [[ -f "${{ inputs.chartPath }}/README.md.gotmpl" ]]; then
                       echo "docs=true" >> $GITHUB_OUTPUT
                   else
                       echo "docs=false" >> $GITHUB_OUTPUT 
                   fi
                   
-                  # application version
+                  # ===================
+                  # Application version
+                  # ===================
+                  app_version="${ref}"
                   if [[ -f ${{ inputs.chartPath }}/bin/get-app-version ]]; then
                       chmod +x ${{ inputs.chartPath }}/bin/get-app-version
                       app_version=$(${{ inputs.chartPath }}/bin/get-app-version)
                   fi
                   echo "app_version=${app_version}" >> $GITHUB_OUTPUT
+                  
+                  # ====================================================================
+                  # Repo name - adds "dev" subdirectory if that's a snapshot
+                  # so the artifacthub.io will not show always snapshot as latest stable
+                  # ====================================================================
+                  repo_name="${{ inputs.chartRepoName }}"
+                  if [[ "${ref}" == *"-latest-"* ]]; then
+                      repo_name="${repo_name}/dev"
+                  fi
 
             - name: Modify Chart.yaml
               # language=bash
