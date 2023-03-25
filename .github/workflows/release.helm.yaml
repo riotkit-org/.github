@@ -63,7 +63,7 @@ jobs:
                   # ===================
                   ref="${{ github.ref_name }}"
                   if [[ "$(git log -n 1 --pretty=%d HEAD)" != *"tag:"* ]]; then
-                      ref="0.0latest${{ github.ref_name }}"
+                      ref="0.0.1-latest-${{ github.ref_name }}"
                   fi
                   if [[ -f ${{ inputs.chartPath }}/bin/get-chart-version ]]; then
                       chmod +x ${{ inputs.chartPath }}/bin/get-chart-version
@@ -95,7 +95,7 @@ jobs:
                   # so the artifacthub.io will not show always snapshot as latest stable
                   # ====================================================================
                   repo_name="${{ inputs.chartRepoName }}"
-                  if [[ "${ref}" == *"latest"* ]]; then
+                  if [[ "${ref}" == *"-latest-"* ]]; then
                       repo_name="${repo_name}/dev"
                   fi
                   echo "repo_name=${repo_name}" >> $GITHUB_OUTPUT
