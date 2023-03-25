@@ -139,8 +139,12 @@ jobs:
               run: "cd ${{ inputs.chartPath }} && helm template ./ --debug && helm lint ./"
 
             - name: Publish changes to GIT
+              # language=bash
               run: |
-                  git push
+                  # only on a branch
+                  if [[ "$(git rev-parse --abbrev-ref --symbolic-full-name HEAD)" != *"head"* ]]; then
+                      git push
+                  fi
 
             - name: Publish Helm Chart to the OCI registry
               uses: appany/helm-oci-chart-releaser@v0.3.0
