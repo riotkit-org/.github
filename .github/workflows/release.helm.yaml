@@ -62,8 +62,10 @@ jobs:
                   # Chart version
                   # ===================
                   ref="${{ github.ref_name }}"
+                  is_snapshot="false"
                   if [[ "$(git log -n 1 --pretty=%d HEAD)" != *"tag:"* ]]; then
                       ref="0.0.1-latest-${{ github.ref_name }}"
+                      is_snapshot="true"
                   fi
                   if [[ -f ${{ inputs.chartPath }}/bin/get-chart-version ]]; then
                       chmod +x ${{ inputs.chartPath }}/bin/get-chart-version
@@ -85,8 +87,13 @@ jobs:
                   # ===================
                   app_version="${ref}"
                   if [[ -f ${{ inputs.chartPath }}/bin/get-app-version ]]; then
+                      echo " >> Reading version from ./bin/get-app-version"
                       chmod +x ${{ inputs.chartPath }}/bin/get-app-version
                       app_version=$(${{ inputs.chartPath }}/bin/get-app-version)
+                  fi
+                  if [[ "${is_snapshot}" == "true" ]]; then
+                      echo " >> We are on a branch, so the docker image tag will be the branch name as this is snapshot"
+                      app_version="${ref}"
                   fi
                   echo "app_version=${app_version}" >> $GITHUB_OUTPUT
                   
