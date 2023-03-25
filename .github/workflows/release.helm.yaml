@@ -115,6 +115,9 @@ jobs:
                       repo_name="${repo_name}/dev"
                   fi
                   echo "repo_name=${repo_name}" >> $GITHUB_OUTPUT
+                  
+                  # other
+                  echo "is_snapshot=${is_snapshot}" >> $GITHUB_OUTPUT
 
             - name: Modify Chart.yaml
               # language=bash
@@ -124,6 +127,13 @@ jobs:
                   yq e -i ".version= \"${{ steps.facts.outputs.ref }}\"" ${{ inputs.chartPath }}/Chart.yaml
                   git add ${{ inputs.chartPath }}/Chart.yaml
                   git commit -m "chore: Bump Chart.yaml / Riotkit" || true
+
+            - name: Modify values.yaml (not committed to GIT)
+              # language=bash
+              run: |
+                  set -x
+                  yq e -i ".riotkit.release.ref= \"${{ github.ref_name }}}\"" ${{ inputs.chartPath }}/values.yaml
+                  yq e -i ".riotkit.release.isSnapshot= \"${{ steps.facts.outputs.is_snapshot }}}\"" ${{ inputs.chartPath }}/values.yaml
 
             - name: Generate README.md
               if: ${{ (steps.facts.outputs.docs == 'true' || inputs.enableHelmDocs) && !startsWith(github.ref, 'refs/tags/v') }}
