@@ -99,7 +99,7 @@ jobs:
                   fi
                   if [[ "${is_snapshot}" == "true" ]]; then    # On snapshot we want to overwrite tags
                       echo " >> We are on a branch, so the docker image tag will be the branch name as this is snapshot"
-                      app_version="${ref}"
+                      app_version="${{ github.ref_name }}}"
                   fi
                   echo "app_version=${app_version}" >> $GITHUB_OUTPUT
                   
