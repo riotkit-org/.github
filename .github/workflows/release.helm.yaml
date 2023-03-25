@@ -123,7 +123,7 @@ jobs:
 
             - name: Verify Helm syntax
               # language=bash
-              run: "cd ${{ inputs.chartPath }} && helm lint ./ && helm template ./ --debug"
+              run: "cd ${{ inputs.chartPath }} && helm template ./ --debug && helm lint ./"
 
             - name: Publish Helm Chart to the OCI registry
               uses: appany/helm-oci-chart-releaser@v0.3.0
