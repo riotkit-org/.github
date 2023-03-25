@@ -106,6 +106,8 @@ jobs:
                   set -x
                   yq e -i ".appVersion= \"${{ steps.facts.outputs.app_version }}\"" ${{ inputs.chartPath }}/Chart.yaml
                   yq e -i ".version= \"${{ steps.facts.outputs.ref }}\"" ${{ inputs.chartPath }}/Chart.yaml
+                  git add ${{ inputs.chartPath }}/Chart.yaml
+                  git commit -m "chore: Bump Chart.yaml / Riotkit" || true
 
             - name: Generate README.md
               if: ${{ (steps.facts.outputs.docs == 'true' || inputs.enableHelmDocs) && !startsWith(github.ref, 'refs/tags/v') }}
