@@ -99,7 +99,7 @@ jobs:
                   fi
                   if [[ "${is_snapshot}" == "true" ]]; then    # On snapshot we want to overwrite tags
                       echo " >> We are on a branch, so the docker image tag will be the branch name as this is snapshot"
-                      app_version="${{ github.ref_name }}}"
+                      app_version="${{ github.ref_name }}"
                   fi
                   echo "app_version=${app_version}" >> $GITHUB_OUTPUT
                   
@@ -132,8 +132,8 @@ jobs:
               # language=bash
               run: |
                   set -x
-                  yq e -i ".riotkit.release.ref= \"${{ github.ref_name }}}\"" ${{ inputs.chartPath }}/values.yaml
-                  yq e -i ".riotkit.release.isSnapshot= \"${{ steps.facts.outputs.is_snapshot }}}\"" ${{ inputs.chartPath }}/values.yaml
+                  yq e -i ".riotkit.release.ref= \"${{ github.ref_name }}\"" ${{ inputs.chartPath }}/values.yaml
+                  yq e -i ".riotkit.release.isSnapshot= \"${{ steps.facts.outputs.is_snapshot }}\"" ${{ inputs.chartPath }}/values.yaml
 
             - name: Generate README.md
               if: ${{ (steps.facts.outputs.docs == 'true' || inputs.enableHelmDocs) && !startsWith(github.ref, 'refs/tags/v') }}
