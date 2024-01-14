@@ -9,12 +9,10 @@ Our Kubernetes ecosystem:
 - [Core Services](https://github.com/riotkit-org/core-services) - services outside Kubernetes to make the disaster recovery easier
 
 Our security projects:
-- [waf-proxy](https://github.com/riotkit-org/waf-proxy) to guard applications against attacks
 - [wordpress-hardened](https://github.com/riotkit-org/wordpress-hardened), WordPress specialized installation automation (docker + helm) with hardening rules, WAF and overall RiotKit ecosystem integration
 
 [Our Backup ecosystem](https://github.com/riotkit-org/backup-ecosystem-releases):
 - [backup-repository](https://github.com/riotkit-org/backup-repository) to store End-To-End encrypted backups in a multi-user environment
 - [pgbr](https://github.com/riotkit-org/br-pgbr), a PostgreSQL automation wrapper
-- [backup-maker-controller](https://github.com/riotkit-org/backup-maker-controller), a Kubernetes controller automating backups creation & restore
 - [br-backup-maker](https://github.com/riotkit-org/br-backup-maker), a Backup Repository client
 - [releases](https://github.com/riotkit-org/backup-ecosystem-releases), release repository for the whole ecosystem
